@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.apache.tomcat.util.json.JSONFilter;
 
 import java.time.LocalDateTime;
 
@@ -27,3 +28,11 @@ public class TodoItem {
     private LocalDateTime dataHora;
 
 }
+
+//JSON dos itens acima para o POST:
+//{
+//    "titulo": "teste",
+//        "descricao": "teste2222",
+//        "concluida": true,
+//        "dataHora": "2024-02-07T12:30:45"
+//}

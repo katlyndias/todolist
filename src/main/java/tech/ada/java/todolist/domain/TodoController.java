@@ -1,10 +1,7 @@
 package tech.ada.java.todolist.domain;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 // o @Controller é gerenciado pelo Spring, então se uso ele não preciso dar new TodoController na main
 @RestController("/todo") // ResController tem o Controller dentro dele, mas por ser rest, vou poder usar métodos http, nível acima do controler
@@ -23,10 +20,7 @@ public class TodoController {
     // método do Controller, que nesse caso vai inserir o todoItem
     @PostMapping("/todo-item") // GetMapping não insere informações, é só pra leitura, devemos usar Post, mas fizemos para estudo/teste
     // sem o /todo-item quando digito localhost:8080 ele acessa direto esse metodo
-    public void inserirTodoItem(){
-        TodoItem todoItem = new TodoItem(); // criou o objeto do construtor vazio
-        todoItem.setTitulo("Acordar"); // usou o set para colocar só o título
-
+    public void cadastrarItem(@RequestBody TodoItem todoItem){ // estamos chamando repositório para salvar o todoItem que chegar pela requisição (body), com os atributos: id, etc
         todoItemRepository.save(todoItem);
     }
 }
