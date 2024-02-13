@@ -20,7 +20,7 @@ public class TodoController {
 
     // quero que esse método seja acessado quando a porta /todo for acessada através do método GetMapping
     // método do Controller, que nesse caso vai inserir o todoItem
-    @GetMapping("/todo-item") // GetMapping não insere informações, normalmente é Post, mas fizemos para estudo/teste
+    @GetMapping("/todo-item") // GetMapping não insere informações, é só pra leitura, devemos usar Post, mas fizemos para estudo/teste
     // sem o /todo-item quando digito localhost:8080 ele acessa direto esse metodo
     public void inserirTodoItem(){
         TodoItem todoItem = new TodoItem(); // criou o objeto do construtor vazio
