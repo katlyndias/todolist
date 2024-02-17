@@ -1,5 +1,6 @@
 package tech.ada.java.todolist.domain;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,15 +11,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 // o @Controller é gerenciado pelo Spring, então se uso ele não preciso dar new TodoController na main
+@RequiredArgsConstructor // funciona pra quem usa Lombok, criando o construtor obrigatório com as dependências, dependencia: um atributo que não foi instanciado e dependo de alguém instanciá-lo
 @RestController("/todo") // ResController tem o Controller dentro dele, mas por ser rest, vou poder usar métodos http, nível acima do controler
 // o controlador vai ser acessado através desse caminho /todo (na Rest)
+
+//Antes do @RequiredArgsConstructor, modo mais utilizado, pois nem toda empresa usa Lombok e se usa nem sempre utiliza o @RequiredArgsConstructor
+//public class TodoController {
+//    // Repository é um atributo de Controller, pois para Controller ser construída tem que receber o repositório
+//    private final TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
+//    @Autowired // usado pra não precisar fazer o construtor, mas não precisa disso pois sei que TodoController é um componente e o repositório é outro
+//    public TodoController(TodoItemRepository todoItemRepository){
+//        this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima, aqui foi colocado apenas pra ficar visual,pra mostrar que o spring está cuidando
+//    }
+
+//Apos o @RequiredArgsConstructor (mais "clean"):
+
 public class TodoController {
-    // Repository é um atributo de Controller, pois para Controller ser construída tem que receber o repositório
-    private final TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
-    @Autowired // usado pra não precisar fazeer o construtor, mas não precisa disso pois sei que TodoController é um componente e o repositório é outro
-    public TodoController(TodoItemRepository todoItemRepository){
-        this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima
-    }
+    private TodoItemRepository todoItemRepository;
 
     // quero que esse método seja acessado quando a porta /todo for acessada através do método GetMapping
     // método do Controller, que nesse caso vai inserir o todoItem
