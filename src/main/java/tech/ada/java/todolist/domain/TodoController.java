@@ -24,7 +24,7 @@ import java.util.List;
 //        this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima, aqui foi colocado apenas pra ficar visual,pra mostrar que o spring está cuidando
 //    }
 
-//Apos o @RequiredArgsConstructor (mais "clean"):
+//Apos o @RequiredArgsConstructor (mais limpo):
 
 public class TodoController {
     private TodoItemRepository todoItemRepository;
