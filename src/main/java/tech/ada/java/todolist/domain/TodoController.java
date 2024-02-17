@@ -3,6 +3,8 @@ package tech.ada.java.todolist.domain;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 // o @Controller é gerenciado pelo Spring, então se uso ele não preciso dar new TodoController na main
 @RestController("/todo") // ResController tem o Controller dentro dele, mas por ser rest, vou poder usar métodos http, nível acima do controler
 // o controlador vai ser acessado através desse caminho /todo (na Rest)
@@ -20,9 +22,19 @@ public class TodoController {
     // método do Controller, que nesse caso vai inserir o todoItem
     @PostMapping("/todo-item") // GetMapping não insere informações, é só pra leitura, devemos usar Post, mas fizemos para estudo/teste
     // sem o /todo-item quando digito localhost:8080 ele acessa direto esse metodo
-    public void cadastrarItem(@RequestBody TodoItem todoItem){ // estamos chamando repositório para salvar o todoItem que chegar pela requisição (body), com os atributos: id, etc
-        todoItemRepository.save(todoItem);
+    // método para cadastrar abaixo:
+    public TodoItem cadastrarItem(@RequestBody TodoItem todoItem){ // estamos chamando repositório para salvar o todoItem que chegar pela requisição (body), com os atributos: id, etc
+        TodoItem novoTodoItem = todoItemRepository.save(todoItem); // save recebe uma entidade genérica (S), pode ser qualquer classe, e retorna a mesma entidade que ele salvou
+        return novoTodoItem;
     }
+    // Get não tem corpo, é tudo na URL
+    // método para buscar todos abaixo:
+    @GetMapping("/todo-item")
+    public List<TodoItem> buscarTodos(){
+        List<TodoItem> listaComTodos = todoItemRepository.findAll(); //o findAll() não recebe parámetro e retorna uma lista List<TodoItem>, por isso poderia retornar direto, por retornar uma lista, mas criando a variável fica mais didático
+        return listaComTodos;
+    }
+
 }
 
 
