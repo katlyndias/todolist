@@ -1,5 +1,8 @@
 package tech.ada.java.todolist.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,12 +12,10 @@ import java.util.List;
 // o @Controller é gerenciado pelo Spring, então se uso ele não preciso dar new TodoController na main
 @RestController("/todo") // ResController tem o Controller dentro dele, mas por ser rest, vou poder usar métodos http, nível acima do controler
 // o controlador vai ser acessado através desse caminho /todo (na Rest)
-
-
 public class TodoController {
     // Repository é um atributo de Controller, pois para Controller ser construída tem que receber o repositório
     private final TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
-
+    @Autowired // usado pra não precisar fazeer o construtor, mas não precisa disso pois sei que TodoController é um componente e o repositório é outro
     public TodoController(TodoItemRepository todoItemRepository){
         this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima
     }
@@ -24,7 +25,7 @@ public class TodoController {
     @PostMapping("/todo-item") // GetMapping não insere informações, é só pra leitura, devemos usar Post, mas fizemos para estudo/teste
     // sem o /todo-item quando digito localhost:8080 ele acessa direto esse metodo
     // método para cadastrar abaixo:
-    public TodoItem cadastrarItem(@RequestBody TodoItemRequest request){ // estamos chamando repositório para salvar o todoItemRequest que chegar pela requisição (body), com os atributos: id, etc
+    public ResponseEntity<TodoItem> cadastrarItem(@RequestBody TodoItemRequest request){ // estamos chamando repositório para salvar o todoItemRequest que chegar pela requisição (body), com os atributos: id, etc
         // request é um objeto TodoItemRequest
         // o TodoItem é a entidade e o TodoItemRequest é uma classe para receber a informação de fora sem expor a entidade TodoItem porque não é o mesmo objeto e dentro da classe TodoItemRepository falamos que ele é de TodoItem (só sabe acessar essa entidade/tabela e não uma classe!)
         // o spring vai criar o TodoItemRequest
@@ -38,7 +39,7 @@ public class TodoController {
         // aí posso passar o todoItemConvertido dentro do save porque ele é um todoItem!
         //id vai ser automatico, concluido vai começar como nao concluido e dataHora vai ser automatico também
         TodoItem novoTodoItem = todoItemRepository.save(todoItemConvertido); // save recebe uma entidade genérica (S), pode ser qualquer classe, e retorna a mesma entidade que ele salvou
-        return novoTodoItem;
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoTodoItem);
     }
     // Get não tem corpo, é tudo na URL
     // método para buscar todos abaixo:
