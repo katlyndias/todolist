@@ -42,6 +42,10 @@ public class TodoItem {
 
     // com modelMapper preciso usar o construtor default mas também quero colocar regras de negocio, então vou sobrescrever o construtor default porque sei que ele vai ser usado
     // o modelMapper é o que ele deveria ensinar pra gente, mas ele gosta de mostrar mais de uma opção e prefere o toEntity porque segue padrões de projeto, ele sempre tenta fugir de depender de ferramenta
+    // vantagem do modelMapper: não tem que fazer o toEntity toda vez que precisar, caso tenha mais request, pois o modelMapper só precisei fazer uma vez pra ensinar o sring a usar, e posso chamar sempre que precisar converter, escreve menos código
+    // desvantagem: atrelar ao framework, desvantagem: se o framework mudar pode quebrar o código, nem sempre é bom ficar dependente dele, às vezes o modelMapper pode dar erro inesperado e não conseguir debugar, mas tem anos de mercado e os melhores programadores trabalhando em cima deles, então dificilmente vai dar problema ou bug
+    // toda escolha tem o ônus e o bônus na programação
+    // no Kotlin não precisa de todas essas ferramentas pois tem muita coisa pronta
     public TodoItem(){
         this.concluida = false; // e coloco a regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // e coloco regra de negocio na entidade
