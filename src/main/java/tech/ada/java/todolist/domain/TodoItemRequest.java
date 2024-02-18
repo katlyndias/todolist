@@ -29,7 +29,7 @@ public class TodoItemRequest {
 
     // método que está convertendo uma request em entidade
     public TodoItem toEntity(){
-        return TodoItem.createTodoItem(titulo, descricao, prazoFinal);
+        return new TodoItem(titulo, descricao, prazoFinal);
     }
 }
 

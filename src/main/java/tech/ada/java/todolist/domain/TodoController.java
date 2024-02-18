@@ -17,7 +17,7 @@ import java.util.List;
 public class TodoController {
     // Repository é um atributo de Controller, pois para Controller ser construída tem que receber o repositório
     private TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
-
+    @Autowired
     public TodoController(TodoItemRepository todoItemRepository){
         this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima, aqui foi colocado apenas pra ficar visual,pra mostrar que o spring está cuidando
     }

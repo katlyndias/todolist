@@ -32,7 +32,7 @@ public class TodoItem {
     // criei um construtor com os parâmetros que precisamos pra converter em entidade
     // a entidade precisa saber se construir da forma certa
     // o certo é ser privado pra ninguém que esteja fora dessa classe consiga usar
-    private TodoItem(String titulo, String descricao, LocalDate prazoFinal, Boolean concluida, LocalDateTime dataHora){
+    public TodoItem(String titulo, String descricao, LocalDate prazoFinal){
         this.titulo = titulo;
         this.descricao = descricao;
         this.prazoFinal = prazoFinal;
@@ -47,14 +47,15 @@ public class TodoItem {
 
     // Não precisamos do método abaixo, mas é uma boa prática, padrão de projeto chamado FACTORY
     // Método autodescritivo pelo nome createTodoItem
-    public static TodoItem createTodoItem(String titulo, String descricao, LocalDate prazoFinal){
-        return new TodoItem(
-                titulo,
-                descricao,
-                prazoFinal,
-                false,
-                LocalDateTime.now());
-    }
+    // Podemos apagar pois a JPA usa o construtor vazio para fazer a leitura
+//    public static TodoItem createTodoItem(String titulo, String descricao, LocalDate prazoFinal){
+//        return new TodoItem(
+//                titulo,
+//                descricao,
+//                prazoFinal,
+//                false,
+//                LocalDateTime.now());
+//    }
 
 }
 
