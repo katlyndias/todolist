@@ -39,6 +39,11 @@ public class TodoItem {
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
     }
 
+    // construtor default
+    public TodoItem(){
+
+    }
+
     public static TodoItem createTodoItem(String titulo, String descricao, LocalDate prazoFinal){
         return new TodoItem(
                 titulo,
