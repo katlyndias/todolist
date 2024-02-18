@@ -25,7 +25,7 @@ public class TodoItem {
     private Long id;
     private String titulo;
     private String descricao;
-    private boolean concluida;
+    private Boolean concluida;
     private LocalDateTime dataHora;
     private LocalDate prazoFinal;
 
@@ -38,7 +38,6 @@ public class TodoItem {
         this.concluida = false; // regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
     }
-
 
     public static TodoItem createTodoItem(String titulo, String descricao, LocalDate prazoFinal){
         return new TodoItem(
