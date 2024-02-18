@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity // Notação do JPA que mostra que a classe é uma entidade do banco de dados
 @Setter // Notação do Lombok que realiza os gets dos campos
 @Getter // Notação do Lombok que realiza os sets dos campos
-@NoArgsConstructor // Notação que faz um construtor sem os campos da classe (default)
+//@NoArgsConstructor // Notação que faz um construtor sem os campos da classe (default)
 //@AllArgsConstructor // Notação que faz um construtor com todos os campos da classe
 @EqualsAndHashCode // Notação que realiza o Equals e HashCode da classe
 
@@ -38,6 +38,13 @@ public class TodoItem {
         this.prazoFinal = prazoFinal;
         this.concluida = false; // regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
+    }
+
+    // com modelMapper preciso usar o construtor default mas também quero colocar regras de negocio, então vou sobrescrever o construtor default porque sei que ele vai ser usado
+    // o modelMapper é o que ele deveria ensinar pra gente, mas ele gosta de mostrar mais de uma opção e prefere o toEntity porque segue padrões de projeto, ele sempre tenta fugir de depender de ferramenta
+    public TodoItem(){
+        this.concluida = false; // e coloco a regra de negócio na entidade
+        this.dataHora = LocalDateTime.now(); // e coloco regra de negocio na entidade
     }
 
 //    // construtor default - > posso apagar e colocar o @NoArgsConstructor para a JPA conseguir fazer a leitura da volta

@@ -1,6 +1,7 @@
 package tech.ada.java.todolist.domain;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ import java.util.List;
 
 public class TodoController {
     // Repository é um atributo de Controller, pois para Controller ser construída tem que receber o repositório
-    private TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
+    private final TodoItemRepository todoItemRepository; // para respeitar o SOLID e possibilitar inversão de dependência
+    private final ModelMapper modelMapper; // aqui virou uma dependência, mas eu coloco no construtor para respeitar o SOLID e possibilitar inversão de dependência
     @Autowired
-    public TodoController(TodoItemRepository todoItemRepository){
+    public TodoController(TodoItemRepository todoItemRepository, ModelMapper modelMapper){
         this.todoItemRepository = todoItemRepository; // só é instanciado aqui no construtor, por isso é final lá em cima, aqui foi colocado apenas pra ficar visual,pra mostrar que o spring está cuidando
+        this.modelMapper = modelMapper;
     }
 
 
@@ -36,7 +39,8 @@ public class TodoController {
         // o repositório só lida com a entidade TodoItem, ele não lida com a entidade TodoItemRequest
         // nao posso usar casting para converter o request para TodoItem, IntelliJ nem permite, pois não é uma entidade
         // casting é perigoso, cuidado ao usar, é enganar a própria JVM, são raros os momentos em que precisamos fazer isso
-        TodoItem todoItemConvertido = request.toEntity();
+        // TodoItem todoItemConvertido = request.toEntity();
+        TodoItem todoItemConvertido = modelMapper.map(request, TodoItem.class); // solicitando ao modelMapper que transforme essa request que estou recebendo no tipo de classe do TodoItem, mas não vai conseguir usar o construtor que criamos, vai querer usar o default do @NoArgsConstructor, provavelmente a maioria das bibliotecas são assim, programadas para usar o default
 
         // aí posso passar o todoItemConvertido dentro do save porque ele é um todoItem!
         //id vai ser automatico, concluido vai começar como nao concluido e dataHora vai ser automatico também
