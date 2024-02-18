@@ -10,12 +10,12 @@ import org.apache.tomcat.util.json.JSONFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity // Anotação do JPA que mostra que a classe é uma entidade do banco de dados
-@Setter // Anotação do Lombok que realiza os gets dos campos
-@Getter // Anotação do Lombok que realiza os sets dos campos
-//@NoArgsConstructor //Anotação que faz um construtor sem os campos da classe
-//@AllArgsConstructor // Anotação que faz um construtor com todos os campos da classe
-@EqualsAndHashCode // Anotação que realiza o Equals e HashCode da classe
+@Entity // Notação do JPA que mostra que a classe é uma entidade do banco de dados
+@Setter // Notação do Lombok que realiza os gets dos campos
+@Getter // Notação do Lombok que realiza os sets dos campos
+@NoArgsConstructor // Notação que faz um construtor sem os campos da classe (default)
+//@AllArgsConstructor // Notação que faz um construtor com todos os campos da classe
+@EqualsAndHashCode // Notação que realiza o Equals e HashCode da classe
 
 public class TodoItem {
     // Declaração dos atributos importantes para o TodoItem existir
@@ -31,7 +31,8 @@ public class TodoItem {
 
     // criei um construtor com os parâmetros que precisamos pra converter em entidade
     // a entidade precisa saber se construir da forma certa
-    public TodoItem(String titulo, String descricao, LocalDate prazoFinal, Boolean concluida, LocalDateTime dataHora){
+    // o certo é ser privado pra ninguém que esteja fora dessa classe consiga usar
+    private TodoItem(String titulo, String descricao, LocalDate prazoFinal, Boolean concluida, LocalDateTime dataHora){
         this.titulo = titulo;
         this.descricao = descricao;
         this.prazoFinal = prazoFinal;
@@ -39,11 +40,13 @@ public class TodoItem {
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
     }
 
-    // construtor default
-    public TodoItem(){
+//    // construtor default - > posso apagar e colocar o @NoArgsConstructor para a JPA conseguir fazer a leitura da volta
+//    public TodoItem(){
+//
+//    }
 
-    }
-
+    // Não precisamos do método abaixo, mas é uma boa prática, padrão de projeto chamado FACTORY
+    // Método autodescritivo pelo nome createTodoItem
     public static TodoItem createTodoItem(String titulo, String descricao, LocalDate prazoFinal){
         return new TodoItem(
                 titulo,
