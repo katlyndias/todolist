@@ -32,10 +32,10 @@ public class TodoItem {
     // criei um construtor com os parâmetros que precisamos pra converter em entidade
     // a entidade precisa saber se construir da forma certa
     // o certo é ser privado pra ninguém que esteja fora dessa classe consiga usar
-    public TodoItem(String titulo, String descricao, LocalDate prazoFinal){
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.prazoFinal = prazoFinal;
+    public TodoItem(String titulo, String descricao, LocalDate prazoFinal){ // aqui só coloco o que não é regra de negocio
+        this.titulo = titulo; // vou receber
+        this.descricao = descricao; // vou receber
+        this.prazoFinal = prazoFinal; // vou receber
         this.concluida = false; // regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
     }

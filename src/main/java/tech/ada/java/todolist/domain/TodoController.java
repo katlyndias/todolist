@@ -1,6 +1,7 @@
 package tech.ada.java.todolist.domain;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 // o @Controller é gerenciado pelo Spring, então se uso ele não preciso dar new TodoController na main
 @RestController("/todo") // ResController tem o Controller dentro dele, mas por ser rest, vou poder usar métodos http, nível acima do controler
@@ -55,6 +57,31 @@ public class TodoController {
         List<TodoItem> listaComTodos = todoItemRepository.findAll(); //o findAll() não recebe parámetro e retorna uma lista List<TodoItem>, por isso poderia retornar direto, por retornar uma lista, mas criando a variável fica mais didático
         return listaComTodos;
     }
+
+    // path é usado para identificar o recurso
+    // /todo-item: todos os recursos
+    // /todo-tem/{id} recurso específico
+    // o path é sobre localização de recursos, se tivesse subtarefa seria /todo-item;{id}/sub-tarefa
+    // o path é para IDENTIFICADOR ÚNICO
+    // filtro não é identificador, usa query parameters (params) (caso quisesse filtrar todas com concluida por ex), apos interrogação "?" /todo-item?concluida=false por exemplo
+    // body: corpo da requisição, informações que vão ser gravadas, alteradas etc
+    // header: recebe coisas genéricas/metadados, como por exemplo um token de autorização, origem de outra aplicação para validação, se aceita só json ou xml, pra que tudo funcione corretamente na aplicação, etc
+    @PatchMapping("/todo-item/{id}") // vou atualizar o status para concluido pelo id, dá pra passar pelo header e pelo path, pelas boas práticas do REST é pelo path (caminho), mas preciso receber o id do cliente, como path variable, a {} é interna, o cliente nao precisa passar
+    public ResponseEntity<TodoItem> alterarStatus(
+            @PathVariable Long id,
+            @RequestBody AlteraStatusRequest request){
+        Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id); // buscamos o objeto no banco pelo id e vai retornar um Optional de TodoItem pois pode ocorrer o caso de o id não existir no banco (nulo), aí daria nulo, então o Optional é pra segurança
+        if(optionalTodoItem.isPresent()){ // consulta se existe o valor do id passado
+            TodoItem todoItemModificado = optionalTodoItem.get(); // tiro o todoItem de dentro do Optional
+            todoItemModificado.setConcluida(request.status()); // posso receber o que vai ser alterado
+            TodoItem todoItemSalvo = todoItemRepository.save(todoItemModificado);
+            return ResponseEntity.ok(todoItemSalvo); // vai salvar o que foi atualizado, retorna a entidade do repositorio
+        } else { // se nao existe o valor do id passado
+            return ResponseEntity.notFound().build(); // erro 404
+        }
+    }
+
+
 }
 
 // obs: se derrubar o servidor e colocar só o get ele não busca nada pois o banco estaria vazio, teria que fazer POST de novo antes do GET
@@ -66,6 +93,8 @@ public class TodoController {
 // PATCH -> para alterar/atualizar informações/campos específicos, não cria nada novo
 // DELETE -> muitas empresas não usam delete, usam o post e no lugar do save coloca .delete ali em cima, mas não é boa prática
 
+// POST É o único método que não é idpotente
+//idpotente: posso executar várias vezes e sempre vai produzir o mesmo resultado
 
 // TodoItemRequest item1 = new TodoItemRequest(
 //        "Acordar",
