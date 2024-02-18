@@ -3,6 +3,7 @@ package tech.ada.java.todolist.domain;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 //}
 
 //
+@Getter
 public class TodoItemRequest {
         private String titulo;
         private String descricao;
