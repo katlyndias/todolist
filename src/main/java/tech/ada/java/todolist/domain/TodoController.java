@@ -65,18 +65,27 @@ public class TodoController {
     // o path é para IDENTIFICADOR ÚNICO
     // filtro não é identificador, usa query parameters (params) (caso quisesse filtrar todas com concluida por ex), apos interrogação "?" /todo-item?concluida=false por exemplo
     // body: corpo da requisição, informações que vão ser gravadas, alteradas etc
-    // header: recebe coisas genéricas/metadados, como por exemplo um token de autorização, origem de outra aplicação para validação, se aceita só json ou xml, pra que tudo funcione corretamente na aplicação, etc
+    // header: recebe coisas genéricas/metadados, como por exemplo um token de autorização (token), origem de outra aplicação para validação, se aceita só json ou xml, pra que tudo funcione corretamente na aplicação, etc
     @PatchMapping("/todo-item/{id}") // vou atualizar o status para concluido pelo id, dá pra passar pelo header e pelo path, pelas boas práticas do REST é pelo path (caminho), mas preciso receber o id do cliente, como path variable, a {} é interna, o cliente nao precisa passar
-    public ResponseEntity<TodoItem> alterarStatus(
-            @PathVariable Long id,
+    public ResponseEntity<TodoItem> alterarStatus( // falo que vou devolver: um ResponseEntity
+            @PathVariable Long id, // o que for passado dentro do {} vai pra essa variável Long id
             @RequestBody AlteraStatusRequest request){
+
         Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id); // buscamos o objeto no banco pelo id e vai retornar um Optional de TodoItem pois pode ocorrer o caso de o id não existir no banco (nulo), aí daria nulo, então o Optional é pra segurança
-        if(optionalTodoItem.isPresent()){ // consulta se existe o valor do id passado
-            TodoItem todoItemModificado = optionalTodoItem.get(); // tiro o todoItem de dentro do Optional
-            todoItemModificado.setConcluida(request.status()); // posso receber o que vai ser alterado
+
+        if(optionalTodoItem.isPresent()){ // consulta se existe o valor do id passado, spring faz isso
+            TodoItem todoItemModificado = optionalTodoItem.get(); // tiro o todoItem de dentro do Optional, pois ele existe
+            // todoItemModificado.setConcluida(request.status());
+
+            // verificamos se uma das tres variaveis que esperamos foi passada para ser atualizada
+            if(request.status() != null) todoItemModificado.setConcluida(request.status()); // if sem chaves: se for verdadeiro, ele faz, se não, só passa pro próximo código
+            if(request.titulo() != null) todoItemModificado.setTitulo(request.titulo());
+            if(request.descricao() != null) todoItemModificado.setDescricao(request.descricao());
+
             TodoItem todoItemSalvo = todoItemRepository.save(todoItemModificado);
-            return ResponseEntity.ok(todoItemSalvo); // vai salvar o que foi atualizado, retorna a entidade do repositorio
-        } else { // se nao existe o valor do id passado
+            return ResponseEntity.ok(todoItemSalvo); // vai salvar o que foi atualizado, retorna a entidade do repositorio (TodoItem) e o código http
+
+        } else { // se nao existe o valor do id passado (se é nulo)
             return ResponseEntity.notFound().build(); // erro 404
         }
     }
@@ -84,13 +93,16 @@ public class TodoController {
 
 }
 
+
+// exemplo de null pointer tentar fazer um get de um valor que é nulo (não tem valor na memória atribuído)
+
 // obs: se derrubar o servidor e colocar só o get ele não busca nada pois o banco estaria vazio, teria que fazer POST de novo antes do GET
 // lista no JSON é representada por cochetes [] e cada chave é um objeto {}
 
 // GET -> usado para leitura passando informações por URL, rápido, buscando informação
 // POST -> toda vez que uso POST estou modificando o servidor, inserindo algo novo, por dentro (body), geralmente o JSON, e não pela url, se executar n vezes o mesmo, vai acontecer n vezes
-// PUT -> parecido com o POST mas nem sempre altera o servidor, usado para atualizar algo que já existe, UP-search, se executar n vezes o mesmo vai atualizar uma vez só, mas o código precisa estar configurado para isso, o nosso código acima na verdade está sempre isnerindo, usado para atualizar tudo
-// PATCH -> para alterar/atualizar informações/campos específicos, não cria nada novo
+// PUT -> parecido com o POST mas nem sempre altera o servidor, usado para atualizar tudo de algo que já existe, UP-search, se executar n vezes o mesmo vai atualizar uma vez só, mas o código precisa estar configurado para isso, o nosso código acima na verdade está sempre isnerindo, usado para atualizar tudo
+// PATCH -> para alterar/atualizar informações/campos específicos, não cria nada novo, 1 ou mais valores
 // DELETE -> muitas empresas não usam delete, usam o post e no lugar do save coloca .delete ali em cima, mas não é boa prática
 
 // POST É o único método que não é idpotente
