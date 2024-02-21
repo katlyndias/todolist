@@ -67,6 +67,7 @@ public class TodoController {
     // body: corpo da requisição, informações que vão ser gravadas, alteradas etc
     // header: recebe coisas genéricas/metadados, como por exemplo um token de autorização (token), origem de outra aplicação para validação, se aceita só json ou xml, pra que tudo funcione corretamente na aplicação, etc
     @PatchMapping("/todo-item/{id}") // vou atualizar o status para concluido pelo id, dá pra passar pelo header e pelo path, pelas boas práticas do REST é pelo path (caminho), mas preciso receber o id do cliente, como path variable, a {} é interna, o cliente nao precisa passar
+
     public ResponseEntity<TodoItem> alterarStatus( // falo que vou devolver: um ResponseEntity
             @PathVariable Long id, // o que for passado dentro do {} vai pra essa variável Long id
             @RequestBody AlteraStatusRequest request){
@@ -74,10 +75,12 @@ public class TodoController {
         Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id); // buscamos o objeto no banco pelo id e vai retornar um Optional de TodoItem pois pode ocorrer o caso de o id não existir no banco (nulo), aí daria nulo, então o Optional é pra segurança
 
         if(optionalTodoItem.isPresent()){ // consulta se existe o valor do id passado, spring faz isso
-            TodoItem todoItemModificado = optionalTodoItem.get(); // tiro o todoItem de dentro do Optional, pois ele existe
-            // todoItemModificado.setConcluida(request.status());
+            TodoItem todoItemModificado = optionalTodoItem.get(); // pego o valor do todoItem de dentro do Optional, pois ele existe
+            // todoItemModificado.setConcluida(request.status()); // antes de fazer o código abaixo das 3 verificacoes, quando era só status
 
+            // não faz sentido criar dois patch diferentes, melhor fazer a atualizaçãod e tudo em um só, se não o path também teria que ser diferente
             // verificamos se uma das tres variaveis que esperamos foi passada para ser atualizada
+            // se quiser atualizar tudo menos o id, eu uso o put, pois ele não altera o id
             if(request.status() != null) todoItemModificado.setConcluida(request.status()); // if sem chaves: se for verdadeiro, ele faz, se não, só passa pro próximo código
             if(request.titulo() != null) todoItemModificado.setTitulo(request.titulo());
             if(request.descricao() != null) todoItemModificado.setDescricao(request.descricao());
@@ -86,8 +89,57 @@ public class TodoController {
             return ResponseEntity.ok(todoItemSalvo); // vai salvar o que foi atualizado, retorna a entidade do repositorio (TodoItem) e o código http
 
         } else { // se nao existe o valor do id passado (se é nulo)
-            return ResponseEntity.notFound().build(); // erro 404
+            return ResponseEntity.notFound().build(); // erro 404 - nao encontrado
         }
+    }
+
+    @PutMapping("/todo-item/{id}") //posso passar o mesmo path dos métodos put e do get pois o identificador é a combinação do caminho com o método
+    public ResponseEntity<TodoItem> alteraTodoItemCompleto(
+            @PathVariable Long id,
+            @RequestBody AlteraTodoItemCompletoRequest request
+   ){
+        Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id); // buscamos o objeto no banco pelo id e vai retornar um Optional de TodoItem pois pode ocorrer o caso de o id não existir no banco (nulo), aí daria nulo, então o Optional é pra segurança
+
+        if(optionalTodoItem.isPresent()) { // consulta se existe o valor do id passado, spring faz isso
+            TodoItem todoItemExistente = optionalTodoItem.get();
+
+            // quero sempre alterar tudo, então não preciso fazer if
+            // nao demos set no id pois é identificador unico
+            todoItemExistente.setTitulo(request.titulo());
+            todoItemExistente.setDescricao(request.titulo());
+            todoItemExistente.setConcluida(request.concluida());
+            todoItemExistente.setDataHora(request.dataHora());
+            todoItemExistente.setPrazoFinal(request.prazoFinal());
+
+            TodoItem todoItemSalvo = todoItemRepository.save(todoItemExistente);
+            return ResponseEntity.ok(todoItemSalvo);
+        } else { // se o recurso não existir
+
+            // posso criar o objeto se ele não existir, em vez de usar o modelmapper pois o modelmapper tá como record, sem construtor
+            // mesmo que eu passe o id que veio, tenho um gerador automatico de id, entao ele setaria o proximo id disponivel
+            // e ai ele nao vai ser idpotente como falamos, se clicar varias vezes ele vai criar vários objetos novos
+            // cuidado com o uso de autoincrementador: se usei autoincrementador, então o put não deveria criar um objeto novo!
+
+            // o código abaixo seria pra criar, mas por estarmos usando o autoincrementador no id não vamos criar novo!
+//            TodoItem novoTodoItem = new TodoItem();
+//            // usando o construtor
+//            novoTodoItem.setTitulo( request.titulo() );
+//            novoTodoItem.setDescricao( request.descricao() );
+//            novoTodoItem.setPrazoFinal( request.prazoFinal() );
+//            novoTodoItem.setDataHora( request.dataHora() );
+//            novoTodoItem.setConcluida( request.concluida() );
+//
+//            novoTodoItem.setId(id);
+//
+//            TodoItem todoItemSalvo = todoItemRepository.save(novoTodoItem);
+//
+//            return ResponseEntity.ok(todoItemSalvo);
+
+            // vamos apenas retornar que não foi encontrado
+            return ResponseEntity.notFound().build();
+
+        }
+
     }
 
 
