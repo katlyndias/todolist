@@ -26,7 +26,8 @@ public class TodoItem {
     private String titulo;
     private String descricao;
     private Boolean concluida;
-    private LocalDateTime dataHora;
+    private LocalDateTime dataHora; // de criação da tarefa
+    private LocalDateTime dataHoraAtualizacao;
     private LocalDate prazoFinal;
 
     // criei um construtor com os parâmetros que precisamos pra converter em entidade
@@ -38,6 +39,8 @@ public class TodoItem {
         this.prazoFinal = prazoFinal; // vou receber
         this.concluida = false; // regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // regra de negocio na entidade
+        this.dataHoraAtualizacao = LocalDateTime.now();
+
     }
 
     // com modelMapper preciso usar o construtor default mas também quero colocar regras de negocio, então vou sobrescrever o construtor default porque sei que ele vai ser usado
@@ -49,6 +52,7 @@ public class TodoItem {
     public TodoItem(){
         this.concluida = false; // e coloco a regra de negócio na entidade
         this.dataHora = LocalDateTime.now(); // e coloco regra de negocio na entidade
+        this.dataHoraAtualizacao = LocalDateTime.now();
     }
 
 //    // construtor default - > posso apagar e colocar o @NoArgsConstructor para a JPA conseguir fazer a leitura da volta

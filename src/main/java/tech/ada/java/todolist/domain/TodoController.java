@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,11 +106,12 @@ public class TodoController {
 
             // quero sempre alterar tudo, então não preciso fazer if
             // nao demos set no id pois é identificador unico
-            todoItemExistente.setTitulo(request.titulo());
-            todoItemExistente.setDescricao(request.titulo());
-            todoItemExistente.setConcluida(request.concluida());
-            todoItemExistente.setDataHora(request.dataHora());
-            todoItemExistente.setPrazoFinal(request.prazoFinal());
+            todoItemExistente.setTitulo(request.getTitulo());
+            todoItemExistente.setDescricao(request.getDescricao());
+            todoItemExistente.setConcluida(request.getConcluida());
+//            todoItemExistente.setDataHora( LocalDateTime.now() ); // poderia ser assim, de quem mandou a request ou do now, ou poderia remover essa linha pra manter o horario de criação, depende da regra de negócio, não desrespeitaria o PUT fazer isso
+            todoItemExistente.setPrazoFinal(request.getPrazoFinal());
+            todoItemExistente.setDataHoraAtualizacao(LocalDateTime.now()); // criei data de atualização pra deixar dataHora inalterado como regra de negócio
 
             TodoItem todoItemSalvo = todoItemRepository.save(todoItemExistente);
             return ResponseEntity.ok(todoItemSalvo);
@@ -141,6 +143,7 @@ public class TodoController {
         }
 
     }
+
 
 
 }
