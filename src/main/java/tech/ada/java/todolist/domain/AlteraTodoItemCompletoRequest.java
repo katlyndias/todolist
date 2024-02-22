@@ -23,6 +23,13 @@ public class AlteraTodoItemCompletoRequest {
         this.dataHora = Objects.requireNonNull(dataHora);
         this.prazoFinal = Objects.requireNonNull(prazoFinal);
     }
+
+    //poderia fazer meu proprio NonNull e usar no lugar do Objects.requireNonNull()
+//    public <T>T myNotNull (T objeto){ // usando generico
+//        if (objeto == null) throw new NullPointerException();
+//
+//        return objeto; // fora do if
+//    }
 }
 
 // OBS: record não é bom para validação, bom só para criar objeto cru.
