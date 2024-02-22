@@ -7,14 +7,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter
-@Setter
-public class AlteraTodoItemCompletoRequest {
-        String titulo;
-        String descricao;
-        Boolean concluida;
-        LocalDateTime dataHora;
-        LocalDate prazoFinal;
+// o record é um construtor cheio em si! por ser final
+public record AlteraTodoItemCompletoRequest(
+        String titulo,
+        String descricao,
+        Boolean concluida,
+        LocalDateTime dataHora,
+        LocalDate prazoFinal
+){
     // construtor - reescrevendo o default
     public AlteraTodoItemCompletoRequest(String titulo, String descricao, Boolean concluida, LocalDateTime dataHora, LocalDate prazoFinal){
         this.titulo = Objects.requireNonNull(titulo, "Título é obrigatório"); // obrigando a não ser nulo, a partir do Java 16 essa classe Objects, tem versão sem mensagem e com sobrecarga com mensagem
@@ -32,6 +32,6 @@ public class AlteraTodoItemCompletoRequest {
 //    }
 }
 
-// OBS: record não é bom para validação, bom só para criar objeto cru.
+// OBS: no record a unica forma de usar o construtor é colocar todos os atributos q tem na criação dele, se deixar sem 1 já não funciona, por ser final
 // Se precisarmos usar o construtor completo que fizemos e tirar o default o Spring usa o completo, por isso conseguimos usar o Objects.
 // Mais seguro usar o Objects.requireNonNull() em vez de @NotNull ou @NotBlank
