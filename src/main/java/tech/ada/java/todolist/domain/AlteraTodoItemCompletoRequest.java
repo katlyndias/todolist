@@ -12,16 +12,15 @@ public record AlteraTodoItemCompletoRequest(
         String titulo,
         String descricao,
         Boolean concluida,
-        LocalDateTime dataHora,
         LocalDate prazoFinal
 ){
     // construtor - reescrevendo o default
-    public AlteraTodoItemCompletoRequest(String titulo, String descricao, Boolean concluida, LocalDateTime dataHora, LocalDate prazoFinal){
+    public AlteraTodoItemCompletoRequest(String titulo, String descricao, Boolean concluida, LocalDate prazoFinal){
         this.titulo = Objects.requireNonNull(titulo, "Título é obrigatório"); // obrigando a não ser nulo, a partir do Java 16 essa classe Objects, tem versão sem mensagem e com sobrecarga com mensagem
-        this.descricao = Objects.requireNonNull(descricao);
-        this.concluida = Objects.requireNonNull(concluida);
-        this.dataHora = Objects.requireNonNull(dataHora);
-        this.prazoFinal = Objects.requireNonNull(prazoFinal);
+        this.descricao = Objects.requireNonNull(descricao, "Descrição é obrigatória");
+        this.concluida = Objects.requireNonNull(concluida, "Concluída é obrigatório");
+        this.prazoFinal = Objects.requireNonNull(prazoFinal, "Prazo é obrigatório");
+        // removido dataHora pois deixamos aqui só o que precisamos de fato receber
     }
 
     //poderia fazer meu proprio NonNull e usar no lugar do Objects.requireNonNull()

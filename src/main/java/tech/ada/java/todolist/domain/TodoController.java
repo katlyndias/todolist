@@ -52,12 +52,20 @@ public class TodoController {
     }
 
     // Get não tem corpo, é tudo na URL
-    // método para buscar todos abaixo:
+    // método para buscar todos abaixo (Get mais genérico)
     @GetMapping("/todo-item")
     public List<TodoItem> buscarTodos() {
         List<TodoItem> listaComTodos = todoItemRepository.findAll(); //o findAll() não recebe parámetro e retorna uma lista List<TodoItem>, por isso poderia retornar direto, por retornar uma lista, mas criando a variável fica mais didático
         return listaComTodos;
     }
+
+    // para buscas específicas (filtros)
+    @GetMapping(value = "/todo-item", params = {"titulo"})
+    public List<TodoItem> buscarPorFiltro(@RequestParam String titulo) {
+        List<TodoItem> listaTodoItem = todoItemRepository.findByTitulo(titulo);
+        return listaTodoItem;
+    }
+
 
     // path é usado para identificar o recurso
     // /todo-item: todos os recursos
