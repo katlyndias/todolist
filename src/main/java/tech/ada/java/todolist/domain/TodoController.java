@@ -62,10 +62,11 @@ public class TodoController {
     // para buscas específicas (filtros)
     @GetMapping(value = "/todo-item", params = {"titulo"})
     public List<TodoItem> buscarPorFiltro(@RequestParam String titulo) {
-        List<TodoItem> listaTodoItem = todoItemRepository.findByTitulo(titulo);
-        return listaTodoItem;
+        // para remover os espaços, se quiser pesquisar também sem espaços:
+        String tituloSemEspacos = titulo.replaceAll("\\s", ""); // \\s é código regex pra espaço, Rei Leao vira ReiLeao pois to substituindo o espaço por nada, removendo-o
+//        String [] novaString = titulo.split(" "); // armazena na string cada palavra do título
+        return todoItemRepository.findByTitulo(tituloSemEspacos);
     }
-
 
     // path é usado para identificar o recurso
     // /todo-item: todos os recursos
